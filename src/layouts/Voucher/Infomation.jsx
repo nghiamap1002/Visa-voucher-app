@@ -6,7 +6,7 @@ export const Infomation = ({ onSend, control, disabled }) => {
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-screen">
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <h2 className="text-2xl font-bold mb-6">Tiktok ID </h2>
+                    <h2 className="text-2xl font-bold mb-6 text-black">Tiktok ID </h2>
                     <div>
                         <Controller
                             control={control}
