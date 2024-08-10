@@ -1,6 +1,7 @@
 import { createBrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
 import HomePage from "./layouts/Home";
 import VoucherPage from "./layouts/Voucher";
+import "react-datepicker/dist/react-datepicker.css";
 
 const App = () => {
 
