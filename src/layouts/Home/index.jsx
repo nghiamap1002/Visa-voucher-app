@@ -152,7 +152,7 @@ const HomePage = () => {
                         <div className="text-xl font-bold mb-10 text-black">Sales Promotion</div>
                         <div className="four bg-white rounded-lg shadow-md p-4 text-black" >
                             <div className="text-lg font-semibold">Redeem Free Voucher</div>
-                            <div className="text-3xl font-bold mb-4">$100</div>
+                            <div className="text-3xl font-bold mb-4">$79</div>
                             <div className="text-sm text-gray-500 mb-2">Get coupon bundle after checkout</div>
                         </div>
 

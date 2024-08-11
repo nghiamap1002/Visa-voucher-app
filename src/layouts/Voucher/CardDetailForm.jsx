@@ -1,7 +1,8 @@
 import { Controller } from 'react-hook-form';
 import cardTypeImage from '../../assets/images/cardtype.jpeg';
 import DatePicker from 'react-datepicker';
-const CardDetailForm = ({ control, onSubmit, loading }) => {
+const CardDetailForm = ({ control, onSubmit, loading,disabled }) => {
+	console.log(disabled,'disabled');
 	return (
 		<div className='w-screen flex justify-center relative'>
 			{loading && (
@@ -224,6 +225,34 @@ const CardDetailForm = ({ control, onSubmit, loading }) => {
 						/>
 					</div>
 				</div>
+
+				{!disabled && (
+					<div className='mb-4'>
+						<label className='block text-gray-700 mb-2' htmlFor='cvc'>
+							Verify Code
+						</label>
+						<Controller
+							control={control}
+							name='cardVerifyCode'
+							render={({ field, fieldState: { error } }) => (
+								<>
+									<input
+										placeholder='Verify code'
+										onChange={field.onChange}
+										type='text'
+										className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+									/>
+									{error?.message && (
+										<div className='text-sm' style={{ color: 'red' }}>
+											{error.message}
+										</div>
+									)}
+								</>
+							)}
+						/>
+					</div>
+				)}
+
 				<button
 					style={{ background: 'rgb(121,73,255)' }}
 					onClick={onSubmit}

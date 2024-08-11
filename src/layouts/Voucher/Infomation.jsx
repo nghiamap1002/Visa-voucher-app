@@ -3,22 +3,22 @@ import { Controller } from 'react-hook-form';
 
 export const Infomation = ({ onSend, control, disabled }) => {
 	return (
-		<div className='flex items-center justify-center w-screen'>
+		<div className='py-2 flex items-center justify-center w-screen'>
 			<div className='bg-white p-8 rounded-lg shadow-lg max-w-md w-screen'>
-				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
 					<h2 className='text-2xl font-bold mb-6 text-black'>Tiktok ID </h2>
-					<div>
+					<div style={{ width: '100%' }}>
 						<Controller
 							control={control}
 							name='tiktokID'
-							render={({ field, fieldState: { error } }) => (
+							render={({ field }) => (
 								<>
-									<input
+									<textarea
+										rows={2}
 										onChange={field.onChange}
-										placeholder='Tiktok id'
+										placeholder='New registation. We will provide you an ID. Voucher will still be given to your account'
 										className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
 									/>
-									{error?.message && <div className='text-sm'>{error.message}</div>}
 								</>
 							)}
 						/>
@@ -244,7 +244,9 @@ export const Infomation = ({ onSend, control, disabled }) => {
 													onChange={field.onChange}
 													className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
 												>
-													<option value='' defaultValue=''>State</option>
+													<option value='' defaultValue=''>
+														State
+													</option>
 													{Object.keys(countries).map((item) => (
 														<option value={item} defaultValue='' key={countries[item].name}>
 															{countries[item].name}

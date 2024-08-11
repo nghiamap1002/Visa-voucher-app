@@ -2,6 +2,7 @@ import { createBrowserRouter, Route, RouterProvider, Routes } from "react-router
 import HomePage from "./layouts/Home";
 import VoucherPage from "./layouts/Voucher";
 import "react-datepicker/dist/react-datepicker.css";
+import './App.css'
 
 const App = () => {
 
