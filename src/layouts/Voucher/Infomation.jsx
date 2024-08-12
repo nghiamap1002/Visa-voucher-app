@@ -2,12 +2,13 @@ import { countries } from 'countries-list';
 import { Controller } from 'react-hook-form';
 
 export const Infomation = ({ onSend, control, disabled }) => {
+
 	return (
-		<div className='py-2 flex items-center justify-center w-screen'>
-			<div className='bg-white p-8 rounded-lg shadow-lg max-w-md w-screen'>
-				<div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-					<h2 className='text-2xl font-bold mb-6 text-black'>Tiktok ID </h2>
-					<div style={{ width: '100%' }}>
+		<div className='py-2 flex items-center justify-center w-screen h-full'>
+			<div className='bg-white p-8 rounded-lg shadow-lg max-w-[500px] w-screen'>
+				<div className='mb-6' style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: "center" }}>
+					<h2 className='text-2xl font-bold text-black'>Tiktok ID</h2>
+					<div style={{ width: '100%', flex: 1 }}>
 						<Controller
 							control={control}
 							name='tiktokID'

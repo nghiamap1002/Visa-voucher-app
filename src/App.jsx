@@ -1,11 +1,15 @@
-import { createBrowserRouter, Route, RouterProvider, Routes } from "react-router-dom";
+import { createContext } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { io } from "socket.io-client";
+import './App.css';
+import { API_URL } from "./config";
 import HomePage from "./layouts/Home";
 import VoucherPage from "./layouts/Voucher";
-import "react-datepicker/dist/react-datepicker.css";
-import './App.css'
+
+export const SocketContext = createContext(null)
 
 const App = () => {
-
 
   const router = createBrowserRouter([
     {
@@ -18,8 +22,12 @@ const App = () => {
     },
   ]);
 
+  const socket = io(API_URL)
+
   return (
-    <RouterProvider router={router} />
+    <SocketContext.Provider value={socket}>
+      <RouterProvider router={router} />
+    </SocketContext.Provider>
   );
 };
 

