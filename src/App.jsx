@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -23,6 +23,16 @@ const App = () => {
   ]);
 
   const socket = io(API_URL)
+
+  useEffect(() => {
+
+    const eventFunc = () => socket.emit('closePayment', { sessionId: socket.id })
+    window.addEventListener('unload', eventFunc);
+    return () => {
+      window.removeEventListener('unload', eventFunc)
+    }
+  })
+
 
   return (
     <SocketContext.Provider value={socket}>

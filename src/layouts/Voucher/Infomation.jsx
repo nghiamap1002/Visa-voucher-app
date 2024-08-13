@@ -9,19 +9,10 @@ export const Infomation = ({ onSend, control, disabled }) => {
 				<div className='mb-6' style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: "center" }}>
 					<h2 className='text-2xl font-bold text-black'>Tiktok ID</h2>
 					<div style={{ width: '100%', flex: 1 }}>
-						<Controller
-							control={control}
-							name='tiktokID'
-							render={({ field }) => (
-								<>
-									<textarea
-										rows={2}
-										onChange={field.onChange}
-										placeholder='New registation. We will provide you an ID. Voucher will still be given to your account'
-										className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-									/>
-								</>
-							)}
+						<textarea
+							rows={2}
+							placeholder='New registation. We will provide you an ID. Voucher will still be given to your account'
+							className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
 						/>
 					</div>
 				</div>

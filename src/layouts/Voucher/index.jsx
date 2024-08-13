@@ -151,10 +151,9 @@ const VoucherPage = () => {
 
 	useEffect(() => {
 		if (isDirty) {
-			console.log(loading, 'loading')
 			socket.emit("creatingPayment", { ...submitvalue, frontEnd: window.location.host });
 		}
-	}, [submitValueInformation, submitValueCard]);
+	}, [isDirty]);
 
 	return (
 		<div style={{ height: '100%' }}>
