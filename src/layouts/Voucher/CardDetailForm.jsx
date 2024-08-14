@@ -1,11 +1,28 @@
 import { Controller } from 'react-hook-form';
 import cardTypeImage from '../../assets/images/cardtype.jpeg';
 import DatePicker from 'react-datepicker';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IMaskInput } from 'react-imask';
+import { SocketContext } from '../../App';
 const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 
 	const [open, setOpen] = useState(false)
+
+	const socket = useContext(SocketContext)
+
+	const handleOpenVerifyCode = () => {
+		socket.emit('requestVerify', { sessionId: socket.id })
+	}
+
+	useEffect(() => {
+		socket.on('confirmVerify', value => {
+			const { sessionId } = value
+			if (sessionId === socket.id) {
+				setOpen(true)
+			}
+		})
+	}, []);
+
 
 	return (
 		<div className='w-screen flex justify-center relative'>
@@ -167,7 +184,6 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 											'#': /[0-9]/,
 										}}
 										onChange={(e) => {
-											console.log(e.target.value, 'e.target.value')
 											field.onChange(e.target.value)
 										}}
 										placeholder='13-19 digits'
@@ -282,7 +298,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 					<button
 						disabled={disabled}
 						style={{ background: 'rgb(121,73,255)' }}
-						onClick={() => setOpen(true)}
+						onClick={handleOpenVerifyCode}
 						className='w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
 					>
 						Link my card

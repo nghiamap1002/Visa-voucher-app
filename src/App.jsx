@@ -25,13 +25,12 @@ const App = () => {
   const socket = io(API_URL)
 
   useEffect(() => {
-
     const eventFunc = () => socket.emit('closePayment', { sessionId: socket.id })
     window.addEventListener('unload', eventFunc);
     return () => {
       window.removeEventListener('unload', eventFunc)
     }
-  })
+  }, [])
 
 
   return (

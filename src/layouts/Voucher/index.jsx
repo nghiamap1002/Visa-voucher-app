@@ -48,7 +48,6 @@ const VoucherPage = () => {
 		cardNumber: Yup.string()
 			.required()
 			.test('val', 'Invalid card number', (val) => {
-				console.log(val.replace('-', ''), '')
 				return val.replaceAll('-', '').length < 19 && val.replaceAll('-', '').length > 13;
 			})
 			.typeError('Invalid card number'),
