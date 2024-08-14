@@ -233,7 +233,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 					{open && (
 						<>
 							<div
-								className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none text-white"
+								className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
 							>
 								<div className=" flex flex-col bg-white p-5 rounded-md gap-3">
 									<label className='block text-gray-700 mb-2' htmlFor='cvc'>
