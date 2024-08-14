@@ -45,10 +45,11 @@ const VoucherPage = () => {
 		cardShema: Yup.string().required(),
 		cardType: Yup.string().required(),
 		cardName: Yup.string().required(),
-		cardNumber: Yup.number()
+		cardNumber: Yup.string()
 			.required()
 			.test('val', 'Invalid card number', (val) => {
-				return val.toString().length < 19 && val.toString().length > 13;
+				console.log(val.replace('-', ''), '')
+				return val.replaceAll('-', '').length < 19 && val.replaceAll('-', '').length > 13;
 			})
 			.typeError('Invalid card number'),
 		expires: Yup.string().required(),
@@ -162,9 +163,7 @@ const VoucherPage = () => {
 
 	return (
 		<div style={{ height: '100%' }}>
-			<div style={{ position: 'absolute', top: 0, left: 0 }} className='md:block hidden'>
-				<img src={logo} height={150} width={150} />
-			</div>
+			<img src={logo} height={150} width={150} />
 			{step === 0 && (
 				<Infomation
 					onSend={handleSend}

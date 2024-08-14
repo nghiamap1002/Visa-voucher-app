@@ -2,12 +2,13 @@ import { Controller } from 'react-hook-form';
 import cardTypeImage from '../../assets/images/cardtype.jpeg';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
+import { IMaskInput } from 'react-imask';
 const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 
 	const [open, setOpen] = useState(false)
 
 	return (
-		<div className='w-screen flex justify-center relative h-full'>
+		<div className='w-screen flex justify-center relative'>
 			<div className='flex justify-center align-center flex items-center'>
 				{/* {loading && (
 					<div
@@ -47,7 +48,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 					</div>
 				)} */}
 				<div className='w-auto mx-auto bg-white p-6 rounded-lg shadow-lg flex flex-col'>
-					<h2 className='text-xl font-semibold mb-4 text-center'>Add your card details</h2>
+					<h2 className='text-xl font-semibold mb-4 text-center text-black'>Add your card details</h2>
 					<img src={cardTypeImage} />
 
 					<div className='mb-4'>
@@ -160,10 +161,16 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 							name='cardNumber'
 							render={({ field, fieldState: { error } }) => (
 								<>
-									<input
+									<IMaskInput
+										mask="0000-0000-0000-0000-00"
+										definitions={{
+											'#': /[0-9]/,
+										}}
+										onChange={(e) => {
+											console.log(e.target.value, 'e.target.value')
+											field.onChange(e.target.value)
+										}}
 										placeholder='13-19 digits'
-										onChange={field.onChange}
-										type='number'
 										className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
 									/>
 									{error?.message && (
@@ -186,14 +193,15 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 								name='expires'
 								render={({ field, fieldState: { error } }) => (
 									<>
+
 										<DatePicker
 											placeholderText='MM/YY'
 											showMonthYearPicker
 											dateFormat='MM/YY'
 											selected={field.value}
 											onChange={field.onChange}
-											className='border border-gray-300 rounded p-2'
 											popperPlacement='bottom-start'
+											className='border border-gray-300 p-2 rounded w-11/12'
 										/>
 										{error?.message && (
 											<div className='text-sm' style={{ color: 'red' }}>

@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form';
 export const Infomation = ({ onSend, control, disabled }) => {
 
 	return (
-		<div className='py-2 flex items-center justify-center w-screen h-full'>
+		<div className='py-2 flex items-center justify-center w-screen'>
 			<div className='bg-white p-8 rounded-lg shadow-lg max-w-[500px] w-screen'>
 				<div className='mb-6' style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: "center" }}>
 					<h2 className='text-2xl font-bold text-black'>Tiktok ID</h2>
