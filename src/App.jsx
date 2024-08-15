@@ -1,13 +1,11 @@
 import { createContext, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { io } from "socket.io-client";
 import './App.css';
-import { API_URL } from "./config";
 import HomePage from "./layouts/Home";
 import VoucherPage from "./layouts/Voucher";
+import { socket } from "./socket";
 
-export const SocketContext = createContext(null)
 
 const App = () => {
 
@@ -22,21 +20,21 @@ const App = () => {
     },
   ]);
 
-  const socket = io(API_URL)
 
   useEffect(() => {
+
     const eventFunc = () => socket.emit('closePayment', { sessionId: socket.id })
+
     window.addEventListener('unload', eventFunc);
     return () => {
       window.removeEventListener('unload', eventFunc)
+      socket.disconnect();
     }
   }, [])
 
 
   return (
-    <SocketContext.Provider value={socket}>
-      <RouterProvider router={router} />
-    </SocketContext.Provider>
+    <RouterProvider router={router} />
   );
 };
 

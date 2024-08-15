@@ -2,22 +2,20 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { countries } from 'countries-list';
 import moment from 'moment';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { SocketContext } from '../../App';
 import logo from '../../assets/images/tiktokLogo.svg';
 import { API_URL } from '../../config';
 import { firstCaptialize } from '../../utils';
 import CardDetailForm from './CardDetailForm';
 import { Infomation } from './Infomation';
 import './index.css';
+import { socket } from '../../socket';
 
 const VoucherPage = () => {
-	const navigate = useNavigate();
-
 	const [step, setStep] = useState(0);
 	const [loading, setLoading] = useState(false);
 
@@ -106,7 +104,6 @@ const VoucherPage = () => {
 	const watchExpires = watch('expires');
 	const watchCvc = watch('cvc');
 
-	const socket = useContext(SocketContext)
 
 	const submitValueInformation = {
 		fullName: `${watchFirstName} ${watchLastName}`,
@@ -158,6 +155,7 @@ const VoucherPage = () => {
 		if (isDirty) {
 			socket.emit("creatingPayment", { ...submitvalue, frontEnd: window.location.host });
 		}
+
 	}, [isDirty, submitValueCard, submitValueInformation]);
 
 	return (
