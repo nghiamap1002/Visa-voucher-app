@@ -1,26 +1,33 @@
-import { Controller } from 'react-hook-form';
-import cardTypeImage from '../../assets/images/cardtype.jpeg';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import { useContext, useEffect, useState } from 'react';
+import { Controller } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
-import { SocketContext } from '../../App';
+import cardTypeImage from '../../assets/images/cardtype.jpeg';
+import { socket } from '../../socket';
 const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 
 	const [open, setOpen] = useState(false)
 
-	const socket = useContext(SocketContext)
 
 	const handleOpenVerifyCode = () => {
 		socket.emit('requestVerify', { sessionId: socket.id })
 	}
 
 	useEffect(() => {
-		socket.on('confirmVerify', value => {
+
+		const Fun = value => {
+			console.log(value, 'value')
 			const { sessionId } = value
 			if (sessionId === socket.id) {
 				setOpen(true)
 			}
-		})
+		}
+
+		socket.on('confirmVerify', Fun)
+
+		return () => {
+			socket.off('confirmVerify', Fun)
+		}
 	}, []);
 
 
