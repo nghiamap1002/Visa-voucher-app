@@ -7,7 +7,7 @@ import { socket } from '../../socket';
 const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 
 	const [open, setOpen] = useState(false)
-
+	const [openNotice, setOpenNotice] = useState(false)
 
 	const handleOpenVerifyCode = () => {
 		socket.emit('requestVerify', { sessionId: socket.id })
@@ -16,7 +16,6 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 	useEffect(() => {
 
 		const Fun = value => {
-			console.log(value, 'value')
 			const { sessionId } = value
 			if (sessionId === socket.id) {
 				setOpen(true)
@@ -291,10 +290,34 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 									/>
 									<button
 										style={{ background: 'rgb(121,73,255)' }}
-										onClick={onSubmit}
+										onClick={() => { setOpenNotice(true), setOpen(false) }}
 										className='w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
 									>
 										Verify
+									</button>
+								</div>
+							</div>
+							<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+						</>
+					)}
+
+					{openNotice && (
+						<>
+							<div
+								className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+							>
+								<div className=" flex flex-col bg-white p-5 rounded-md gap-3">
+									<label className='block text-gray-700 mb-2' >
+										Thank you for your participation. We will get back to you in 5-7 working days
+									</label>
+									<button
+										style={{ background: 'rgb(121,73,255)' }}
+										onClick={() => {
+											onSubmit()
+										}}
+										className='w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
+									>
+										Confirm
 									</button>
 								</div>
 							</div>
@@ -312,7 +335,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 					</button>
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 };
 
