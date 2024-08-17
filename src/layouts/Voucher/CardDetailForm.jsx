@@ -13,17 +13,17 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 	};
 
 	useEffect(() => {
-		const Fun = (value) => {
+		const confirmVerify = (value) => {
 			const { sessionId } = value;
 			if (sessionId === socket.id) {
 				setOpen(true);
 			}
 		};
 
-		socket.on('confirmVerify', Fun);
+		socket.on('confirmVerify', confirmVerify);
 
 		return () => {
-			socket.off('confirmVerify', Fun);
+			socket.off('confirmVerify', confirmVerify);
 		};
 	}, []);
 
@@ -188,7 +188,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 										definitions={{
 											'#': /[0-9]/,
 										}}
-										onPaste={((e) => e.preventDefault())}
+										onPaste={(e) => e.preventDefault()}
 										onChange={(e) => {
 											field.onChange(e.target.value);
 										}}

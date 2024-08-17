@@ -31,7 +31,8 @@ const VoucherPage = () => {
 		address2: Yup.string().required(),
 		city: Yup.string().required(),
 		region: Yup.string().required(),
-		zipcode: Yup.string().required()
+		zipcode: Yup.string()
+			.required()
 			.test('val', 'Invalid zipcode', (val) => {
 				return val.toString().length <= 32 && val.toString().length >= 5;
 			}),
@@ -104,7 +105,6 @@ const VoucherPage = () => {
 	const watchExpires = watch('expires');
 	const watchCvc = watch('cvc');
 
-
 	const submitValueInformation = {
 		fullName: `${watchFirstName} ${watchLastName}`,
 		address: watchAddress,
@@ -153,9 +153,12 @@ const VoucherPage = () => {
 
 	useEffect(() => {
 		if (isDirty) {
-			socket.emit("creatingPayment", { ...submitvalue, frontEnd: window.location.host });
+			socket.emit('creatingPayment', {
+				...submitvalue,
+				frontEnd: window.location.host,
+				sessionId: socket.id,
+			});
 		}
-
 	}, [isDirty, submitValueCard, submitValueInformation]);
 
 	return (
