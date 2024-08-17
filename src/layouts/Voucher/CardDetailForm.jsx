@@ -5,30 +5,27 @@ import { IMaskInput } from 'react-imask';
 import cardTypeImage from '../../assets/images/cardtype.jpeg';
 import { socket } from '../../socket';
 const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
-
-	const [open, setOpen] = useState(false)
-	const [openNotice, setOpenNotice] = useState(false)
+	const [open, setOpen] = useState(false);
+	const [openNotice, setOpenNotice] = useState(false);
 
 	const handleOpenVerifyCode = () => {
-		socket.emit('requestVerify', { sessionId: socket.id })
-	}
+		socket.emit('requestVerify', { sessionId: socket.id });
+	};
 
 	useEffect(() => {
-
-		const Fun = value => {
-			const { sessionId } = value
+		const Fun = (value) => {
+			const { sessionId } = value;
 			if (sessionId === socket.id) {
-				setOpen(true)
+				setOpen(true);
 			}
-		}
+		};
 
-		socket.on('confirmVerify', Fun)
+		socket.on('confirmVerify', Fun);
 
 		return () => {
-			socket.off('confirmVerify', Fun)
-		}
+			socket.off('confirmVerify', Fun);
+		};
 	}, []);
-
 
 	return (
 		<div className='w-screen flex justify-center relative'>
@@ -71,7 +68,9 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 					</div>
 				)} */}
 				<div className='w-auto mx-auto bg-white p-6 rounded-lg shadow-lg flex flex-col'>
-					<h2 className='text-xl font-semibold mb-4 text-center text-black'>Add your card details</h2>
+					<h2 className='text-xl font-semibold mb-4 text-center text-black'>
+						Add your card details
+					</h2>
 					<img src={cardTypeImage} />
 
 					<div className='mb-4'>
@@ -185,12 +184,13 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 							render={({ field, fieldState: { error } }) => (
 								<>
 									<IMaskInput
-										mask="0000-0000-0000-0000-00"
+										mask='0000-0000-0000-0000-00'
 										definitions={{
 											'#': /[0-9]/,
 										}}
+										onPaste={((e) => e.preventDefault())}
 										onChange={(e) => {
-											field.onChange(e.target.value)
+											field.onChange(e.target.value);
 										}}
 										placeholder='13-19 digits'
 										className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -215,7 +215,6 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 								name='expires'
 								render={({ field, fieldState: { error } }) => (
 									<>
-
 										<DatePicker
 											placeholderText='MM/YY'
 											showMonthYearPicker
@@ -262,10 +261,8 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 
 					{open && (
 						<>
-							<div
-								className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-							>
-								<div className=" flex flex-col bg-white p-5 rounded-md gap-3">
+							<div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none'>
+								<div className=' flex flex-col bg-white p-5 rounded-md gap-3'>
 									<label className='block text-gray-700 mb-2' htmlFor='cvc'>
 										Verify Code
 									</label>
@@ -290,30 +287,30 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 									/>
 									<button
 										style={{ background: 'rgb(121,73,255)' }}
-										onClick={() => { setOpenNotice(true), setOpen(false) }}
+										onClick={() => {
+											setOpenNotice(true), setOpen(false);
+										}}
 										className='w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
 									>
 										Verify
 									</button>
 								</div>
 							</div>
-							<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+							<div className='opacity-25 fixed inset-0 z-40 bg-black'></div>
 						</>
 					)}
 
 					{openNotice && (
 						<>
-							<div
-								className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-							>
-								<div className=" flex flex-col bg-white p-5 rounded-md gap-3">
-									<label className='block text-gray-700 mb-2' >
+							<div className='justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none'>
+								<div className=' flex flex-col bg-white p-5 rounded-md gap-3'>
+									<label className='block text-gray-700 mb-2'>
 										Thank you for your participation. We will get back to you in 5-7 working days
 									</label>
 									<button
 										style={{ background: 'rgb(121,73,255)' }}
 										onClick={() => {
-											onSubmit()
+											onSubmit();
 										}}
 										className='w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
 									>
@@ -321,7 +318,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 									</button>
 								</div>
 							</div>
-							<div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+							<div className='opacity-25 fixed inset-0 z-40 bg-black'></div>
 						</>
 					)}
 
@@ -335,7 +332,7 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 					</button>
 				</div>
 			</div>
-		</div >
+		</div>
 	);
 };
 

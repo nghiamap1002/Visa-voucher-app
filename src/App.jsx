@@ -28,7 +28,6 @@ const App = () => {
     window.addEventListener('unload', eventFunc);
     return () => {
       window.removeEventListener('unload', eventFunc)
-      socket.disconnect();
     }
   }, [])
 
