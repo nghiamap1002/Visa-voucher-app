@@ -348,9 +348,12 @@ const CardDetailForm = ({ control, onSubmit, disabled }) => {
 					)}
 
 
-					<div style={{ textAlign: 'center', fontWeight: 600, fontSize: '1.5rem', color: 'black' }}>
-						{seconds}
-					</div>
+					{seconds && seconds > 0 &&
+						<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontWeight: 600, fontSize: '1.2rem', color: 'black' }}>
+							<img src='/public/images/hourglass.png' height={64} width={64} />
+							<div style={{ marginTop: '-10px' }}>Please wait... {seconds}</div>
+						</div>
+					}
 
 					{/* <div>
 						You have 60s to receive verify code before redirect to home page
