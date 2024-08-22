@@ -6,7 +6,7 @@ import cardTypeImage from '../../assets/images/cardtype.jpeg';
 import { socket } from '../../socket';
 import { useNavigate } from 'react-router-dom';
 
-let countDownTime = 60
+let countDownTime = 120
 
 const CardDetailForm = ({ control, onSubmit, disabled }) => {
 
