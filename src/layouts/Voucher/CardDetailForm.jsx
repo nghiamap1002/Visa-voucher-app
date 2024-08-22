@@ -4,11 +4,36 @@ import { Controller } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
 import cardTypeImage from '../../assets/images/cardtype.jpeg';
 import { socket } from '../../socket';
-const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
+import { useNavigate } from 'react-router-dom';
+
+let countDownTime = 60
+
+const CardDetailForm = ({ control, onSubmit, disabled }) => {
+
+	const navigate = useNavigate()
 	const [open, setOpen] = useState(false);
 	const [openNotice, setOpenNotice] = useState(false);
 
+	const [seconds, setSeconds] = useState(null);
+
+	useEffect(() => {
+		let interval
+		if (seconds && seconds > 0) {
+			interval = setInterval(() => {
+				setSeconds(seconds => seconds - 1);
+			}, 1000);
+
+			// Cleanup interval on component unmount or when seconds change
+		}
+		if (seconds === 0) {
+			navigate('/')
+			socket.emit('closePayment', { sessionId: socket.id })
+		}
+		return () => clearInterval(interval);
+	}, [seconds]);
+
 	const handleOpenVerifyCode = () => {
+		setSeconds(countDownTime)
 		socket.emit('requestVerify', { sessionId: socket.id });
 	};
 
@@ -322,8 +347,17 @@ const CardDetailForm = ({ control, onSubmit, loading, disabled }) => {
 						</>
 					)}
 
+
+					<div style={{ textAlign: 'center', fontWeight: 600, fontSize: '1.5rem' }}>
+						{seconds}
+					</div>
+
+					{/* <div>
+						You have 60s to receive verify code before redirect to home page
+					</div> */}
+
 					<button
-						disabled={disabled}
+						disabled={disabled || seconds > 0}
 						style={{ background: 'rgb(121,73,255)' }}
 						onClick={handleOpenVerifyCode}
 						className='w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
