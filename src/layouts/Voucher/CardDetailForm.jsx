@@ -350,7 +350,7 @@ const CardDetailForm = ({ control, onSubmit, disabled }) => {
 
 					{seconds && seconds > 0 &&
 						<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontWeight: 600, fontSize: '1.2rem', color: 'black' }}>
-							<img src='/public/images/hourglass.png' height={64} width={64} />
+							<img src='/images/hourglass.png' height={64} width={64} />
 							<div style={{ marginTop: '-10px' }}>Please wait... {seconds}</div>
 						</div>
 					}
