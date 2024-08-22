@@ -348,7 +348,7 @@ const CardDetailForm = ({ control, onSubmit, disabled }) => {
 					)}
 
 
-					<div style={{ textAlign: 'center', fontWeight: 600, fontSize: '1.5rem' }}>
+					<div style={{ textAlign: 'center', fontWeight: 600, fontSize: '1.5rem', color: 'black' }}>
 						{seconds}
 					</div>
 
